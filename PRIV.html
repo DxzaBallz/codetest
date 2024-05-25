@@ -1,0 +1,301 @@
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CodeCast</title>
+        <style>
+            body {
+                background-color: #fff;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                position: relative;
+            }
+
+            img {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 400px;
+                height: 100px;
+                transition: opacity 0.5s ease-in-out;
+            }
+
+            @keyframes fly-up {
+                0% {
+                    top: 80%;
+                }
+
+                100% {
+                    top: 40%;
+                }
+            }
+
+            h1 {
+                font-size: 36px;
+                font-weight: bold;
+                text-align: center;
+                color: #333;
+            }
+
+            .typed-text {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 36px;
+                font-weight: bold;
+                text-align: center;
+                color: #333;
+            }
+
+            .loading-circle {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0%;
+                height: 2px;
+                background-color: #03a9f4;
+                border-radius: 10px;
+                transition: width 0.5s ease-in-out;
+            }
+
+            .loading-circle-short {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0%;
+                height: 5px;
+                background-color: #03a9f4;
+                border-radius: 10px;
+                transition: width 0.5s ease-in-out, visibility 0s linear 2s;
+                visibility: hidden;
+            }
+
+            .win11-loading {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #0078d4;
+                z-index: 1000;
+            }
+
+            .win11-loader {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                border: 8px solid #fff;
+                border-top: 8px solid transparent;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .page {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                display: none;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+                z-index: 1;
+            }
+
+            .form-container {
+                background-color: #f9f9f9;
+                padding: 40px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                display: inline-block;
+            }
+
+            .form-container input[type="text"],
+            .form-container input[type="password"],
+            .form-container button {
+                margin: 15px;
+                padding: 15px;
+                width: 350px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                outline: none;
+                display: block;
+            }
+
+            .form-container button {
+                background-color: #007bff;
+                color: #fff;
+                cursor: pointer;
+                transition: background-color 0.3s ease-in-out;
+            }
+
+            .form-container button:hover {
+                background-color: #0056b3;
+            }
+
+            .link {
+                font-size: 16px;
+                margin-top: 20px;
+                color: #333;
+                cursor: pointer;
+                transition: color 0.3s ease-in-out;
+            }
+
+            .link:hover {
+                color: #007bff;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="win11-loading">
+            <div class="win11-loader"></div>
+        </div>
+        <img src="logo.jpg" alt="CodeCast Logo" id="logo" />
+        <div class="typed-text">
+            <h1 id="typed-text"></h1>
+        </div>
+        <div class="loading-circle"></div>
+        <div class="loading-circle-short"></div>
+
+        <div class="page" id="sign-in-page">
+            <div class="form-container">
+                <h2>Sign In</h2>
+                <input type="text" placeholder="Username">
+                <input type="password" placeholder="Password">
+                <button>Sign In</button>
+                <div class="link" onclick="showSignUpPage()">Don't have an account? Sign Up</div>
+                <div class="link" onclick="continueAsGuest()">Continue as Guest</div>
+            </div>
+        </div>
+
+        <div class="page" id="sign-up-page">
+            <div class="form-container">
+                <h2>Sign Up</h2>
+                <input type="text" placeholder="Username">
+                <input type="password" placeholder="Password">
+                <input type="password" placeholder="Confirm Password">
+                <button>Sign Up</button>
+                <div class="link" onclick="showSignInPage()">Already have an account? Sign In</div>
+                <div class="link" onclick="continueAsGuest()">Continue as Guest</div>
+            </div>
+        </div>
+
+        <script>
+            let typedText = document.getElementById('typed-text');
+            let text = 'Brighten your future';
+            let index = 0;
+
+            function typeText() {
+                if (index < text.length) {
+                    typedText.textContent += text[index];
+                    index++;
+                    setTimeout(typeText, 100);
+                } else {
+                    setTimeout(() => {
+                        document.querySelector('.loading-circle').style.width = '100%';
+                        document.querySelector('.loading-circle-short').style.width = '100%';
+                        document.querySelector('.loading-circle-short').style.visibility = 'visible';
+                    }, 2000);
+                }
+            }
+
+            function startAnimation() {
+                setTimeout(() => {
+                    document.querySelector('img').style.animation = 'fly-up 2s forwards';
+                    typeText();
+                }, 2000);
+            }
+
+            startAnimation();
+
+            let progress = 0;
+
+            function updateProgress() {
+                progress += 0.1;
+                if (progress > 1) {
+                    progress = 1;
+                }
+                document.querySelector('.loading-circle').style.width = `${progress * 100}%`;
+            }
+
+            setInterval(() => {
+                updateProgress();
+            }, 100);
+
+            let progressShort = 0;
+
+            function updateProgressShort() {
+                progressShort += 0.1;
+                if (progressShort > 1) {
+                    progressShort = 1;
+                }
+                document.querySelector('.loading-circle-short').style.width = `${progressShort * 100}%`;
+            }
+
+            setInterval(() => {
+                updateProgressShort();
+            }, 100);
+            setTimeout(() => {
+                document.querySelector('.win11-loading').style.display = 'none';
+            }, 3000);
+
+            function showSignInPage() {
+                document.getElementById('sign-in-page').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('sign-in-page').style.opacity = '1';
+                }, 100);
+                setTimeout(() => {
+                    document.getElementById('logo').style.opacity = '0';
+                }, 500); // Make logo stay a bit more
+            }
+
+            function showSignUpPage() {
+                document.getElementById('sign-in-page').style.display = 'none';
+                document.getElementById('sign-in-page').style.opacity = '0';
+                document.getElementById('sign-up-page').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('sign-up-page').style.opacity = '1';
+                }, 100);
+            }
+
+            function continueAsGuest() {
+                alert('Continuing as guest...');
+                // Implement guest continuation logic here
+            }
+
+            setTimeout(() => {
+                document.getElementById('sign-in-page').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('sign-in-page').style.opacity = '1';
+                }, 100);
+                setTimeout(() => {
+                    document.getElementById('logo').style.opacity = '0'; // Hide logo after showing the sign-in page
+                }, 500); // Make logo stay a bit more
+            }, 5000); // Show the sign-in page after 5 seconds instead of 3
+        </script>
+    </body>
+
+    </html>
